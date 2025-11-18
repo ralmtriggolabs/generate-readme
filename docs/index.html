@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de README.md</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .preview-area {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .form-section {
+            margin-bottom: 1.5rem;
+        }
+        .required::after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">📄 Gerador de README.md</h1>
+        
+        <div class="row">
+            <!-- Formulário -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">📝 Preencha os dados do seu projeto</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="readmeForm">
+                            <!-- Título -->
+                            <div class="form-section">
+                                <label for="projectTitle" class="form-label required">Título do Projeto</label>
+                                <input type="text" class="form-control" id="projectTitle" placeholder="Ex: Sistema de Gerenciamento de Tarefas" required>
+                            </div>
+                            
+                            <!-- Descrição -->
+                            <div class="form-section">
+                                <label for="projectDescription" class="form-label required">Descrição</label>
+                                <textarea class="form-control" id="projectDescription" rows="3" placeholder="Explique em poucas linhas o que o projeto faz e para quem ele serve" required></textarea>
+                            </div>
+                            
+                            <!-- Tecnologias -->
+                            <div class="form-section">
+                                <label for="technologies" class="form-label required">Tecnologias Utilizadas</label>
+                                <textarea class="form-control" id="technologies" rows="3" placeholder="Liste as principais ferramentas e linguagens usadas (separadas por vírgula)" required></textarea>
+                                <div class="form-text">Ex: JavaScript, HTML5, CSS3, Bootstrap, Node.js</div>
+                            </div>
+                            
+                            <!-- Instalação -->
+                            <div class="form-section">
+                                <label for="installation" class="form-label required">Instalação</label>
+                                <textarea class="form-control" id="installation" rows="3" placeholder="Passo a passo simples para rodar o projeto na máquina local" required></textarea>
+                            </div>
+                            
+                            <!-- Como Usar -->
+                            <div class="form-section">
+                                <label for="usage" class="form-label required">Como Usar</label>
+                                <textarea class="form-control" id="usage" rows="3" placeholder="Exemplos de uso, prints ou GIFs (se quiser), e instruções práticas" required></textarea>
+                            </div>
+                            
+                            <!-- Estrutura de Pastas -->
+                            <div class="form-section">
+                                <label for="folderStructure" class="form-label">Estrutura de Pastas</label>
+                                <textarea class="form-control" id="folderStructure" rows="3" placeholder="Breve explicação sobre como o projeto está organizado"></textarea>
+                            </div>
+                            
+                            <!-- Contribuição -->
+                            <div class="form-section">
+                                <label for="contribution" class="form-label">Contribuição</label>
+                                <textarea class="form-control" id="contribution" rows="2" placeholder="Como outras pessoas podem contribuir com melhorias"></textarea>
+                            </div>
+                            
+                            <!-- Licença -->
+                            <div class="form-section">
+                                <label for="license" class="form-label required">Licença</label>
+                                <select class="form-select" id="license" required>
+                                    <option value="">Selecione uma licença</option>
+                                    <option value="MIT">MIT License</option>
+                                    <option value="Apache-2.0">Apache License 2.0</option>
+                                    <option value="GPL-3.0">GNU GPL v3</option>
+                                    <option value="BSD-3-Clause">BSD 3-Clause</option>
+                                    <option value="ISC">ISC License</option>
+                                    <option value="Unlicense">The Unlicense</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Autor -->
+                            <div class="form-section">
+                                <label for="author" class="form-label">Autor</label>
+                                <input type="text" class="form-control" id="author" placeholder="Seu nome ou nome da organização">
+                            </div>
+                            
+                            <button type="button" class="btn btn-primary w-100" id="generateBtn">Gerar README</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preview -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title">👁️ Pré-visualização</h5>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="copyBtn">Copiar</button>
+                    </div>
+                    <div class="card-body">
+                        <div id="preview" class="preview-area">
+                            # Nome do Projeto
+                            
+                            ## Descrição
+                            *Preencha o formulário ao lado para gerar seu README*
+                            
+                            ## Tecnologias Utilizadas
+                            - *Lista de tecnologias aparecerá aqui*
+                            
+                            ## Instalação
+                            *Passos de instalação aparecerão aqui*
+                            
+                            ## Como Usar
+                            *Instruções de uso aparecerão aqui*
+                            
+                            ## Estrutura de Pastas
+                            *Estrutura de pastas aparecerá aqui*
+                            
+                            ## Contribuição
+                            *Instruções para contribuição aparecerão aqui*
+                            
+                            ## Licença
+                            *Informações sobre a licença aparecerão aqui*
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('readmeForm');
+            const generateBtn = document.getElementById('generateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const preview = document.getElementById('preview');
+            
+            // Mapeamento de licenças para URLs
+            const licenseUrls = {
+                'MIT': 'https://opensource.org/licenses/MIT',
+                'Apache-2.0': 'https://www.apache.org/licenses/LICENSE-2.0',
+                'GPL-3.0': 'https://www.gnu.org/licenses/gpl-3.0.html',
+                'BSD-3-Clause': 'https://opensource.org/licenses/BSD-3-Clause',
+                'ISC': 'https://opensource.org/licenses/ISC',
+                'Unlicense': 'http://unlicense.org/'
+            };
+            
+            // Função para gerar o README
+            function generateReadme() {
+                // Obter valores do formulário
+                const title = document.getElementById('projectTitle').value || 'Nome do Projeto';
+                const description = document.getElementById('projectDescription').value || '*Descrição do projeto*';
+                const technologies = document.getElementById('technologies').value || '*Tecnologias utilizadas*';
+                const installation = document.getElementById('installation').value || '*Passos de instalação*';
+                const usage = document.getElementById('usage').value || '*Instruções de uso*';
+                const folderStructure = document.getElementById('folderStructure').value || '*Estrutura de pastas*';
+                const contribution = document.getElementById('contribution').value || '*Instruções para contribuição*';
+                const license = document.getElementById('license').value;
+                const author = document.getElementById('author').value || '';
+                
+                // Processar tecnologias (separar por vírgula e criar lista)
+                const techList = technologies.split(',').map(tech => `- ${tech.trim()}`).join('\n');
+                
+                // Gerar conteúdo do README
+                let readmeContent = `# ${title}\n\n`;
+                
+                if (author) {
+                    readmeContent += `**Autor:** ${author}\n\n`;
+                }
+                
+                readmeContent += `## 📋 Descrição\n${description}\n\n`;
+                
+                readmeContent += `## 🛠️ Tecnologias Utilizadas\n${techList}\n\n`;
+                
+                readmeContent += `## ⚙️ Instalação\n${installation}\n\n`;
+                
+                readmeContent += `## 🚀 Como Usar\n${usage}\n\n`;
+                
+                if (folderStructure) {
+                    readmeContent += `## 📁 Estrutura de Pastas\n${folderStructure}\n\n`;
+                }
+                
+                if (contribution) {
+                    readmeContent += `## 🤝 Contribuição\n${contribution}\n\n`;
+                }
+                
+                if (license) {
+                    const licenseUrl = licenseUrls[license] || '#';
+                    readmeContent += `## 📄 Licença\nEste projeto está licenciado sob a [${license}](${licenseUrl}).\n\n`;
+                }
+                
+                // Atualizar preview
+                preview.textContent = readmeContent;
+            }
+            
+            // Evento para gerar README
+            generateBtn.addEventListener('click', function() {
+                // Verificar campos obrigatórios
+                const requiredFields = form.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('is-invalid');
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+                
+                if (isValid) {
+                    generateReadme();
+                } else {
+                    alert('Por favor, preencha todos os campos obrigatórios.');
+                }
+            });
+            
+            // Evento para copiar README
+            copyBtn.addEventListener('click', function() {
+                const textarea = document.createElement('textarea');
+                textarea.value = preview.textContent;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                // Feedback visual
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copiado!';
+                copyBtn.classList.remove('btn-outline-secondary');
+                copyBtn.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.classList.remove('btn-success');
+                    copyBtn.classList.add('btn-outline-secondary');
+                }, 2000);
+            });
+            
+            // Gerar README automaticamente quando os campos forem alterados
+            form.addEventListener('input', function() {
+                // Verificar se todos os campos obrigatórios estão preenchidos
+                const requiredFields = form.querySelectorAll('[required]');
+                let allRequiredFilled = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        allRequiredFilled = false;
+                    }
+                });
+                
+                if (allRequiredFilled) {
+                    generateReadme();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
